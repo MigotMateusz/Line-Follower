@@ -3,7 +3,7 @@
 #include <Wire.h>
 #include <driver/adc.h>
 #include "oled.h"
-#include "gyro.h"
+//#include "gyro.h"
 #include "utilities.h"
 
 #define motor1A 25
@@ -37,10 +37,11 @@ void setup() {
   isBatteryLevelGood = checkBatteryLevel();
   if(/*isBatteryLevelGood*/true) {
     double batteryLevel = getBatteryVoltage();
-    printBatteryLevel(batteryLevel);
-    printBatteryGood();
     Serial.println("good");
     Serial.println(batteryLevel);
+    printBatteryLevel(batteryLevel);
+    printBatteryGood();
+    
     delay(5000);
     isBatteryLevelGood = true;
     //printStartUpFailure();
@@ -67,7 +68,8 @@ void loop() {
   Serial.println("---");
   delay(2000);
   
-  //read();
+  read();
+  printAccGyroData();
   //digitalWrite(motor1A, HIGH);
   //digitalWrite(motor2A, LOW);
   //delay(2000);

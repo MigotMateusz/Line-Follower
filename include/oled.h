@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Adafruit_SH1106.h>
 #include <Adafruit_I2CDevice.h>
+#include "gyro.h"
 
 //SID, SCLK, DC, RST, CS
 Adafruit_SH1106 display(16,23,4,-1,15);
@@ -98,5 +99,28 @@ void printStartUpFailure() {
     display.setTextSize(1);
     display.println("Please put the robot");
     display.println("on the start");
+    display.display();
+}
+
+void printAccGyroData() {
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.setTextSize(1);
+    display.println("Accelerometer");
+    display.print("X: ");
+    display.print(AccX);
+    display.print(" Y: ");
+    display.print(AccY);
+    display.print(" Z: ");
+    display.println(AccZ);
+
+    display.println("Gyroscope");
+    display.print("X: ");
+    display.print(GyroX);
+    display.print(" Y: ");
+    display.print(GyroY);
+    display.print(" Z: ");
+    display.println(GyroZ);
+
     display.display();
 }
