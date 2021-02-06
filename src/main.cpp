@@ -1,21 +1,33 @@
-/*
-   Arduino and MPU6050 Accelerometer and Gyroscope Sensor Tutorial
-   by Dejan, https://howtomechatronics.com
-*/
+
 #include <Arduino.h>
 #include <Wire.h>
+#include <driver/adc.h>
 #include "oled.h"
+#include "gyro.h"
 
-const int MPU = 0x68; // MPU6050 I2C address
+#define motor1A 25
+#define motor2A 26
+#define motorEN12 27
+#define batteryLevelPin 39
+
+/*const int MPU = 0x68; // MPU6050 I2C address
 float AccX, AccY, AccZ;
 float GyroX, GyroY, GyroZ;
 float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ;
 float roll, pitch, yaw;
 float AccErrorX, AccErrorY, GyroErrorX, GyroErrorY, GyroErrorZ;
 float elapsedTime, currentTime, previousTime;
-int c = 0;
+int c = 0;*/
 
 void setup() {
+  digitalWrite(motor1A, HIGH);
+  digitalWrite(motor2A, LOW);
+  adc1_config_width(ADC_WIDTH_BIT_12);
+  adc1_config_channel_atten(ADC1_CHANNEL_0, ADC_ATTEN_DB_0);
+  pinMode(motor1A, OUTPUT);
+  pinMode(motor2A, OUTPUT);
+  pinMode(motorEN12, OUTPUT);
+  digitalWrite(motorEN12, HIGH);
   Serial.begin(9600);
   Wire.begin();                      // Initialize comunication
   Wire.beginTransmission(MPU);       // Start communication with MPU6050 // MPU=0x68
@@ -36,44 +48,22 @@ void setup() {
   delay(20);
   */
   // Call this function if you need to get the IMU error values for your module
-  
+  int batteryValue = adc1_get_raw(ADC1_CHANNEL_3);
+  Serial.println(batteryValue);
+  Serial.println("---");
   delay(20);
-    draw();
+  draw();
 }
 
 void loop() {
-  // === Read acceleromter data === //
-  Wire.beginTransmission(MPU);
-  Wire.write(0x3B); // Start with register 0x3B (ACCEL_XOUT_H)
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU, 6, true); // Read 6 registers total, each axis value is stored in 2 registers
-  //For a range of +-2g, we need to divide the raw values by 16384, according to the datasheet
-  AccX = (Wire.read() << 8 | Wire.read()) / 16384.0; // X-axis value
-  AccY = (Wire.read() << 8 | Wire.read()) / 16384.0; // Y-axis value
-  AccZ = (Wire.read() << 8 | Wire.read()) / 16384.0; // Z-axis value
-  // Calculating Roll and Pitch from the accelerometer data
-  accAngleX = (atan(AccY / sqrt(pow(AccX, 2) + pow(AccZ, 2))) * 180 / PI) - 0.58; // AccErrorX ~(0.58) See the calculate_IMU_error()custom function for more details
-  accAngleY = (atan(-1 * AccX / sqrt(pow(AccY, 2) + pow(AccZ, 2))) * 180 / PI) + 1.58; // AccErrorY ~(-1.58)
-
-  // === Read gyroscope data === //
-  previousTime = currentTime;        // Previous time is stored before the actual time read
-  currentTime = millis();            // Current time actual time read
-  elapsedTime = (currentTime - previousTime) / 1000; // Divide by 1000 to get seconds
-  Wire.beginTransmission(MPU);
-  Wire.write(0x43); // Gyro data first register address 0x43
-  Wire.endTransmission(false);
-  Wire.requestFrom(MPU, 6, true); // Read 4 registers total, each axis value is stored in 2 registers
-  GyroX = (Wire.read() << 8 | Wire.read()) / 131.0; // For a 250deg/s range we have to divide first the raw value by 131.0, according to the datasheet
-  GyroY = (Wire.read() << 8 | Wire.read()) / 131.0;
-  GyroZ = (Wire.read() << 8 | Wire.read()) / 131.0;
-    Serial.println("Acc");
-    Serial.println(AccX);
-    Serial.println(AccY);
-    Serial.println(AccZ);
-
-    Serial.println("Gyro");
-    Serial.println(GyroX);
-    Serial.println(GyroY);
-    Serial.println(GyroZ);
-    delay(1000);
+  int value = adc1_get_raw(ADC1_CHANNEL_6);
+  Serial.println(value);
+  Serial.println("---");
+  delay(2000);
+  read();
+  //digitalWrite(motor1A, HIGH);
+  //digitalWrite(motor2A, LOW);
+  //delay(2000);
+  //digitalWrite(motor1A, LOW);
+  
 }

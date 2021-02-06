@@ -3,7 +3,7 @@
 #include <Adafruit_I2CDevice.h>
 
 //SID, SCLK, DC, RST, CS
-Adafruit_SH1106 display(16,23,4,18,15);
+Adafruit_SH1106 display(16,23,4,-1,15);
 //Adafruit_SH1106 display(22,23);
 
 
