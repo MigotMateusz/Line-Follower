@@ -36,6 +36,8 @@
 
 #define BLACK_DECISION_BOUNDARY 2500
 
+
+
 void setupADC() {
   adc1_config_width(ADC_WIDTH_BIT_12);
 }

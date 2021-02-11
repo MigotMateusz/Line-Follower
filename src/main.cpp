@@ -16,7 +16,7 @@ void setup() {
 
   isBatteryLevelGood = checkBatteryLevel();
 
-  if(isBatteryLevelGood) {
+  if(/*isBatteryLevelGood*/ true) {
     double batteryLevel = getBatteryVoltage();
     Serial.println("Battery Lvl Good");
     Serial.println(batteryLevel);
@@ -27,7 +27,7 @@ void setup() {
     isBatteryLevelGood = true;
 
     isOnTheLine = checkIfOnTheLine();
-    if(isOnTheLine)
+    if(/*isOnTheLine*/true)
       printStartUpSuccess();
     
     else {
@@ -55,36 +55,39 @@ void loop() {
     }
   }
 
-  int value = adc1_get_raw(CNY70_FRONT_CHANNEL);
+  int frontSensor = adc1_get_raw(CNY70_FRONT_CHANNEL);
   Serial.print("Front: ");
-  Serial.println(value);
+  Serial.println(frontSensor);
 
-  value = adc1_get_raw(CNY70_CENTER_CHANNEL);
+  int centerSensor = adc1_get_raw(CNY70_CENTER_CHANNEL);
   Serial.print("Center: ");
-  Serial.println(value);
+  Serial.println(centerSensor);
 
-  adc2_get_raw(CNY70_CENTER_LEFT_CHANNEL, ADC_WIDTH_12Bit, &value);
+  int centerLeftSensor;
+  adc2_get_raw(CNY70_CENTER_LEFT_CHANNEL, ADC_WIDTH_12Bit, &centerLeftSensor);
   Serial.print("Center-left: ");
-  Serial.println(value);
+  Serial.println(centerLeftSensor);
 
-  value = adc1_get_raw(CNY70_LEFT_CHANNEL);
+  int leftSensor = adc1_get_raw(CNY70_LEFT_CHANNEL);
   Serial.print("Left: ");
-  Serial.println(value);
+  Serial.println(leftSensor);
 
-  value = adc1_get_raw(CNY70_CENTER_RIGHT_CHANNEL);
+  int centerRightSensor = adc1_get_raw(CNY70_CENTER_RIGHT_CHANNEL);
   Serial.print("Center-right: ");
-  Serial.println(value);
+  Serial.println(centerRightSensor);
 
-  adc2_get_raw(CNY70_RIGHT_CHANNEL, ADC_WIDTH_12Bit, &value);
+  int rightSensor;
+  adc2_get_raw(CNY70_RIGHT_CHANNEL, ADC_WIDTH_12Bit, &rightSensor);
   Serial.print("Right: ");
-  Serial.println(value);
-  delay(2000);
+  Serial.println(rightSensor);
 
   Serial.println("---");
   Serial.println("---");
   Serial.println("---");
   
-  //read();
+  delay(2000);
+  readMPU();
+  printCalcGyroData();
   //printAccGyroData();
   /*digitalWrite(motor3A, HIGH);
   digitalWrite(motor4A, LOW);

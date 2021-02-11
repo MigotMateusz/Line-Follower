@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <math.h>
+#include <cmath>
 
 const int MPU = 0x68;
 float AccX, AccY, AccZ;
@@ -12,7 +14,7 @@ float roll = 0, pitch = 0, yaw = 0;
 float AccErrorX = 0, AccErrorY = 0, GyroErrorX = 0, GyroErrorY = 0, GyroErrorZ = 0;
 float elapsedTime=0, currentTime=0, previousTime=0;
 int c = 0;
-double pi = 3.141592;
+double pi = 3.14159265;
 
 void setupMPU() {
   Serial.begin(9600);
@@ -24,7 +26,7 @@ void setupMPU() {
   delay(20);
 }
 
-void read() {
+void readMPU() {
     // === Read acceleromter data === //
   Serial.begin(9600);
   Wire.beginTransmission(MPU);
@@ -36,18 +38,6 @@ void read() {
   AccY = (Wire.read() << 8 | Wire.read()) / 16384.0; // Y-axis value
   AccZ = (Wire.read() << 8 | Wire.read()) / 16384.0; // Z-axis value
 
-  
-  // Calculating Roll and Pitch from the accelerometer data
-  //accAngleX = (atan(AccY / sqrt(pow(AccX, 2) + pow(AccZ, 2))) * 180 / PI) - 0.58; 
-  //accAngleY = (atan(-1 * AccX / sqrt(pow(AccY, 2) + pow(AccZ, 2))) * 180 / PI) + 1.58;
-
-  accAngleX = atan2(AccX, sqrt(pow(AccY,2) + pow(AccZ,2)))/(pi/180);
-  accAngleY = atan2(AccY, sqrt(pow(AccX,2) + pow(AccZ,2)))/(pi/180);
-  
-  // === Read gyroscope data === //
-  previousTime = currentTime;        // Previous time is stored before the actual time read
-  currentTime = millis();            // Current time actual time read
-  elapsedTime = (currentTime - previousTime) / 1000; // Divide by 1000 to get seconds
   Wire.beginTransmission(MPU);
   Wire.write(0x43); // Gyro data first register address 0x43
   Wire.endTransmission(false);
@@ -55,14 +45,6 @@ void read() {
   GyroX = (Wire.read() << 8 | Wire.read()) / 131.0; // For a 250deg/s range we have to divide first the raw value by 131.0, according to the datasheet
   GyroY = (Wire.read() << 8 | Wire.read()) / 131.0;
   GyroZ = (Wire.read() << 8 | Wire.read()) / 131.0;
-  // Currently the raw values are in degrees per seconds, deg/s, so we need to multiply by sendonds (s) to get the angle in degrees
-  gyroAngleX = GyroX * elapsedTime; // deg/s * s = deg
-  gyroAngleY = GyroY * elapsedTime;
-  yaw =   GyroZ * elapsedTime;
-
-  // Complementary filter - combine acceleromter and gyro angle values
-  roll = 0.96 * gyroAngleX + 0.04 * accAngleX;
-  pitch = 0.96 * gyroAngleY + 0.04 * accAngleY;
   
   Serial.println("Accelerometr Readings");
   Serial.print("X: ");
@@ -79,13 +61,17 @@ void read() {
   Serial.print("Z: ");
   Serial.println(GyroZ);
 
+  pitch = 180 * atan(AccX/sqrt(AccY*AccY + AccZ*AccZ))/pi;
+  roll = 180 * atan(AccY/sqrt(AccX*AccX + AccZ*AccZ))/pi;
+  yaw = 180 * tan(AccZ/sqrt(AccX*AccX + AccZ*AccZ))/pi;
+
   // Print the values on the serial monitor
-  /*Serial.print("Roll: ");
+  Serial.print("Roll: ");
   Serial.println(roll);
   Serial.print("Pitch: ");
   Serial.println(pitch);
   Serial.print("Yaw: ");
-  Serial.println(yaw);*/
+  Serial.println(yaw);
 }
 
 #endif

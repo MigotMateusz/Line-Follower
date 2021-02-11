@@ -17,21 +17,6 @@ void setupDisplay() {
     display.clearDisplay();
 }
 
-void draw(void) {
-    display.clearDisplay();
-    display.drawPixel(10, 10, WHITE);
-    display.setTextSize(1);
-    display.setTextColor(WHITE);
-    display.setCursor(0,0);
-    display.println("Hello, world!");
-    display.setTextColor(BLACK, WHITE); // 'inverted' text
-    display.println(3.141592);
-    display.setTextSize(2);
-    display.setTextColor(WHITE);
-    display.print("0x"); display.println(0xDEADBEEF, HEX);
-    display.display();
-    delay(2000);
-}
 
 void printBatteryLevel(double level) {
     display.clearDisplay();
@@ -97,7 +82,7 @@ void printAccGyroData() {
     display.print("X: ");
     display.print(AccX);
     display.print(" Y: ");
-    display.print(AccY);
+    display.println(AccY);
     display.print(" Z: ");
     display.println(AccZ);
 
@@ -105,9 +90,23 @@ void printAccGyroData() {
     display.print("X: ");
     display.print(GyroX);
     display.print(" Y: ");
-    display.print(GyroY);
+    display.println(GyroY);
     display.print(" Z: ");
     display.println(GyroZ);
+
+    display.display();
+}
+
+void printCalcGyroData() {
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.setTextSize(1);
+    display.print("Roll: ");
+    display.println(roll);
+    display.print("Pitch: ");
+    display.println(pitch);
+    display.print("Yaw: ");
+    display.println(yaw);
 
     display.display();
 }
