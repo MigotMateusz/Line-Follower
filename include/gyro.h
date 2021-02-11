@@ -1,3 +1,6 @@
+#ifndef GYRO_H
+#define GYRO_H
+
 #include <Arduino.h>
 #include <Wire.h>
 
@@ -84,3 +87,5 @@ void read() {
   Serial.print("Yaw: ");
   Serial.println(yaw);*/
 }
+
+#endif

@@ -1,16 +1,18 @@
-#include <Arduino.h>
-#include <driver/adc.h>
-#define voltageDivider 39
+#ifndef UTILITIES_H
+#define UTILITIES_H
+
+#include "config.h"
 
 double batteryVoltage;
 
 bool checkBatteryLevel() {
     Serial.begin(9600);
-    int batteryValue = adc1_get_raw(ADC1_CHANNEL_3);
+    int batteryValue = adc1_get_raw(VOLTAGE_DIVIDER_ADC_CHANNEL);
     //1V gives ~313 on adc
+    Serial.print("Battery value from ADC: ");
     Serial.println(batteryValue);
     Serial.println("---");
-    batteryVoltage = batteryValue * 313 / 100000;
+    batteryVoltage = batteryValue / 313.0;
 
     if(batteryValue > 1800)
         return true;
@@ -21,3 +23,21 @@ bool checkBatteryLevel() {
 double getBatteryVoltage() {
     return batteryVoltage;
 }
+
+bool checkIfOnTheLine() {
+    int frontValue = adc1_get_raw(CNY70_FRONT_CHANNEL);
+    int centerValue = adc1_get_raw(CNY70_CENTER_CHANNEL);
+    Serial.print("Front: ");
+    Serial.println(frontValue);
+    Serial.print("Center: ");
+    Serial.println(centerValue);
+    
+    if(frontValue > BLACK_DECISION_BOUNDARY 
+        && centerValue > BLACK_DECISION_BOUNDARY)
+        return true;
+
+    else 
+        return false;
+}
+
+#endif

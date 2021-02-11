@@ -31,6 +31,11 @@
 #define CNY70_RIGHT 14
 #define CNY70_RIGHT_CHANNEL ADC2_CHANNEL_6
 
+#define voltageDivider 39
+#define VOLTAGE_DIVIDER_ADC_CHANNEL ADC1_CHANNEL_3
+
+#define BLACK_DECISION_BOUNDARY 2500
+
 void setupADC() {
   adc1_config_width(ADC_WIDTH_BIT_12);
 }

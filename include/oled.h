@@ -1,3 +1,6 @@
+#ifndef OLED_H
+#define OLED_H
+
 #include <Arduino.h>
 #include <Adafruit_SH1106.h>
 #include <Adafruit_I2CDevice.h>
@@ -15,17 +18,9 @@ void setupDisplay() {
 }
 
 void draw(void) {
-     //display.begin(SH1106_SWITCHCAPVCC);
-    //display.display();
-    //delay(2000);
-    
-
-    // Clear the buffer.
-    display.clearDisplay();
-    // Clear the buffer.
     display.clearDisplay();
     display.drawPixel(10, 10, WHITE);
-     display.setTextSize(1);
+    display.setTextSize(1);
     display.setTextColor(WHITE);
     display.setCursor(0,0);
     display.println("Hello, world!");
@@ -36,14 +31,12 @@ void draw(void) {
     display.print("0x"); display.println(0xDEADBEEF, HEX);
     display.display();
     delay(2000);
-    
-
 }
 
 void printBatteryLevel(double level) {
     display.clearDisplay();
-     display.drawPixel(10, 10, WHITE);
-     display.setTextSize(1);
+    display.drawPixel(10, 10, WHITE);
+    display.setTextSize(1);
     display.setTextColor(WHITE);
     display.setCursor(0,0);
     display.setTextSize(1);
@@ -63,7 +56,6 @@ void printBatteryWarning() {
     display.println("Battery voltage is");
     display.println("too low. Please");
     display.println("recharge batteries");
-    //display.println("Please recharge batteries");
     display.display();
 }
 
@@ -119,3 +111,5 @@ void printAccGyroData() {
 
     display.display();
 }
+
+#endif
