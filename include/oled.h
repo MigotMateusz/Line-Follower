@@ -5,6 +5,7 @@
 #include <Adafruit_SH1106.h>
 #include <Adafruit_I2CDevice.h>
 #include "gyro.h"
+#include "config.h"
 
 //SID, SCLK, DC, RST, CS
 Adafruit_SH1106 display(16,23,4,-1,15);
@@ -101,13 +102,52 @@ void printCalcGyroData() {
     display.clearDisplay();
     display.setCursor(0,0);
     display.setTextSize(1);
+    //pl. Przechył
     display.print("Roll: ");
     display.println(roll);
+    //pl. Pochylenie
     display.print("Pitch: ");
     display.println(pitch);
+    //pl. Kierunek azymutalny
     display.print("Yaw: ");
     display.println(yaw);
 
+    display.display();
+}
+
+void printDebug(lastMove move, int ll, int l, int c, int r, int rr, int f) {
+    display.clearDisplay();
+    display.setCursor(0,0);
+    display.setTextSize(1);
+    switch(move) {
+        case FORWARD:
+            display.println("FORWARD");
+        break;
+      
+      case LEFT:
+        display.println("LEFT");
+        break;
+
+      case RIGHT:
+        display.println("RIGHT");
+        break;
+
+      default:
+        display.println("DEFAULT");
+        break;
+    }
+    display.print("Front: ");
+    display.println(f);
+    display.print("c: ");
+    display.print(c);
+    display.print(" l: ");
+    display.print(ll);
+    display.print(" cl: ");
+    display.println(l);
+    display.print("cr: ");
+    display.print(r);
+    display.print(" r: ");
+    display.print(rr);
     display.display();
 }
 

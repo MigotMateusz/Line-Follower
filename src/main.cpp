@@ -2,9 +2,11 @@
 #include "oled.h"
 #include "utilities.h"
 #include "config.h"
+#include "motors.h"
 
 bool isBatteryLevelGood = true;
 bool isOnTheLine = true;
+lastMove move;
 
 void setup() {
   Serial.begin(9600);
@@ -56,42 +58,62 @@ void loop() {
   }
 
   int frontSensor = adc1_get_raw(CNY70_FRONT_CHANNEL);
-  Serial.print("Front: ");
-  Serial.println(frontSensor);
 
-  int centerSensor = adc1_get_raw(CNY70_CENTER_CHANNEL);
-  Serial.print("Center: ");
-  Serial.println(centerSensor);
+  int centerSensor;
+  adc2_get_raw(CNY70_CENTER_CHANNEL, ADC_WIDTH_12Bit, &centerSensor);
 
-  int centerLeftSensor;
-  adc2_get_raw(CNY70_CENTER_LEFT_CHANNEL, ADC_WIDTH_12Bit, &centerLeftSensor);
-  Serial.print("Center-left: ");
-  Serial.println(centerLeftSensor);
+  int centerLeftSensor = adc1_get_raw(CNY70_CENTER_LEFT_CHANNEL);
 
-  int leftSensor = adc1_get_raw(CNY70_LEFT_CHANNEL);
-  Serial.print("Left: ");
-  Serial.println(leftSensor);
+  int leftSensor;
+  adc2_get_raw(CNY70_LEFT_CHANNEL, ADC_WIDTH_12Bit, &leftSensor);
 
   int centerRightSensor = adc1_get_raw(CNY70_CENTER_RIGHT_CHANNEL);
-  Serial.print("Center-right: ");
-  Serial.println(centerRightSensor);
 
-  int rightSensor;
-  adc2_get_raw(CNY70_RIGHT_CHANNEL, ADC_WIDTH_12Bit, &rightSensor);
-  Serial.print("Right: ");
-  Serial.println(rightSensor);
+  int rightSensor = adc1_get_raw(CNY70_RIGHT_CHANNEL);
 
-  Serial.println("---");
-  Serial.println("---");
-  Serial.println("---");
-  
-  delay(2000);
-  readMPU();
-  printCalcGyroData();
-  //printAccGyroData();
-  /*digitalWrite(motor3A, HIGH);
-  digitalWrite(motor4A, LOW);
-  delay(2000);
-  digitalWrite(motor4A, LOW);*/
-  
+  //FORWARD
+  if((frontSensor > BLACK_DECISION_BOUNDARY && centerSensor > BLACK_DECISION_BOUNDARY) || frontSensor > BLACK_DECISION_BOUNDARY) {
+    /*forward: 1A Low, 2A High, 4A Low, 3A high*/
+    ledcWrite(0, 200);
+    ledcWrite(1, 200);
+    digitalWrite(motor1A, LOW);
+    digitalWrite(motor3A, LOW);
+    digitalWrite(motor4A, HIGH);
+    digitalWrite(motor2A, HIGH);
+    move = FORWARD;
+  } 
+  //RIGHT
+  else if(centerRightSensor > BLACK_DECISION_BOUNDARY || rightSensor > BLACK_DECISION_BOUNDARY) {
+    turnRight();
+    move = RIGHT;
+  } 
+  //LEFT
+  else if(centerLeftSensor > BLACK_DECISION_BOUNDARY || leftSensor > BLACK_DECISION_BOUNDARY) {
+    turnLeft();
+    move = LEFT;
+  } 
+  //STAY
+  else {
+    switch(move) {
+      case FORWARD:
+        moveForward();
+        break;
+      
+      case LEFT:
+        turnLeft();
+        break;
+
+      case RIGHT:
+        turnRight();
+        break;
+
+      default:
+        stopMotors();
+        break;
+    }
+  }
+  printDebug(move, leftSensor, centerLeftSensor, centerSensor,
+  centerRightSensor, rightSensor, frontSensor);
+  //readMPU();
+  //printCalcGyroData(); 
 }
