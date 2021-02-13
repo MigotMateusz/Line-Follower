@@ -7,6 +7,7 @@
 bool isBatteryLevelGood = true;
 bool isOnTheLine = true;
 lastMove move;
+long long previousMillis;
 
 void setup() {
   Serial.begin(9600);
@@ -48,6 +49,7 @@ void setup() {
     Serial.println("Battey Lvl Bad");
     Serial.println(batteryLevel);
   }
+  previousMillis = millis();
 }
 
 void loop() {
@@ -74,12 +76,7 @@ void loop() {
   //FORWARD
   if((frontSensor > BLACK_DECISION_BOUNDARY && centerSensor > BLACK_DECISION_BOUNDARY) || frontSensor > BLACK_DECISION_BOUNDARY) {
     /*forward: 1A Low, 2A High, 4A Low, 3A high*/
-    ledcWrite(0, 200);
-    ledcWrite(1, 200);
-    digitalWrite(motor1A, LOW);
-    digitalWrite(motor3A, LOW);
-    digitalWrite(motor4A, HIGH);
-    digitalWrite(motor2A, HIGH);
+    moveForward();
     move = FORWARD;
   } 
   //RIGHT
@@ -112,8 +109,13 @@ void loop() {
         break;
     }
   }
-  printDebug(move, leftSensor, centerLeftSensor, centerSensor,
-  centerRightSensor, rightSensor, frontSensor);
-  //readMPU();
-  //printCalcGyroData(); 
+  //printDebug(move, leftSensor, centerLeftSensor, centerSensor,
+  //centerRightSensor, rightSensor, frontSensor);
+
+  long long currentMillis = millis();
+  if(currentMillis - previousMillis > 2000) {
+    previousMillis = currentMillis;
+    readMPU();
+    printCalcGyroData();
+  }
 }

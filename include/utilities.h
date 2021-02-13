@@ -26,12 +26,8 @@ double getBatteryVoltage() {
 
 bool checkIfOnTheLine() {
     int frontValue = adc1_get_raw(CNY70_FRONT_CHANNEL);
-    int centerValue;// = adc1_get_raw(CNY70_CENTER_CHANNEL);
+    int centerValue;
     adc2_get_raw(CNY70_CENTER_CHANNEL, ADC_WIDTH_12Bit, &centerValue);
-    Serial.print("Front: ");
-    Serial.println(frontValue);
-    Serial.print("Center: ");
-    Serial.println(centerValue);
     
     if(frontValue > BLACK_DECISION_BOUNDARY 
         && centerValue > BLACK_DECISION_BOUNDARY)

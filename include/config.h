@@ -43,7 +43,6 @@ enum lastMove {
 };
 
 
-
 void setupADC() {
   adc1_config_width(ADC_WIDTH_BIT_12);
 }
@@ -52,17 +51,16 @@ void setupMotorPins() {
     pinMode(motor1A, OUTPUT);
     pinMode(motor2A, OUTPUT);
     pinMode(motorEN12, OUTPUT);
-    ledcSetup(0, 30000, 8);
-    ledcSetup(1, 30000, 8);
-    ledcAttachPin(motorEN12, 0);
-    
 
     pinMode(motor3A, OUTPUT);
     pinMode(motor4A, OUTPUT);
     pinMode(motorEN34, OUTPUT);
+
+    ledcSetup(0, 30000, 8);
+    ledcSetup(1, 30000, 8);
+
+    ledcAttachPin(motorEN12, 0);
     ledcAttachPin(motorEN34, 1);
-    //digitalWrite(motorEN12, HIGH);
-    //digitalWrite(motorEN34, HIGH);
 }
 
 #endif
