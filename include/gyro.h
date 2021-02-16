@@ -63,8 +63,7 @@ void readMPU() {
 
   pitch = 180 * atan(AccX/sqrt(AccY*AccY + AccZ*AccZ))/pi;
   roll = 180 * atan(AccY/sqrt(AccX*AccX + AccZ*AccZ))/pi;
-  yaw = 180 * tan(AccZ/sqrt(AccX*AccX + AccZ*AccZ))/pi;
-
+  yaw = 180 * atan(sqrt(AccX*AccX + AccY*AccY)/AccZ)/pi;
   // Print the values on the serial monitor
   Serial.print("Roll: ");
   Serial.println(roll);

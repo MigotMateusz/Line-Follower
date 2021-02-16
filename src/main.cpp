@@ -19,18 +19,15 @@ void setup() {
 
   isBatteryLevelGood = checkBatteryLevel();
 
-  if(/*isBatteryLevelGood*/ true) {
+  if(/*isBatteryLevelGood*/true) {
     double batteryLevel = getBatteryVoltage();
     Serial.println("Battery Lvl Good");
     Serial.println(batteryLevel);
-    printBatteryLevel(batteryLevel);
     printBatteryGood();
     delay(5000);
-
     isBatteryLevelGood = true;
-
     isOnTheLine = checkIfOnTheLine();
-    if(/*isOnTheLine*/true)
+    if(/*isOnTheLine*/ true)
       printStartUpSuccess();
     
     else {
@@ -45,6 +42,7 @@ void setup() {
   } else {
     double batteryLevel = getBatteryVoltage();
     printBatteryLevel(batteryLevel);
+    
     printBatteryWarning();
     Serial.println("Battey Lvl Bad");
     Serial.println(batteryLevel);

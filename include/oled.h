@@ -46,6 +46,11 @@ void printBatteryWarning() {
 }
 
 void printBatteryGood() {
+    display.clearDisplay();
+    display.drawPixel(10, 10, WHITE);
+    display.setTextColor(WHITE);
+    display.setCursor(0,0);
+    display.setTextSize(1.5);
     display.println("Battery level is good");
     display.println("Device will move soon");
     display.display();

@@ -4,6 +4,7 @@
 #include "config.h"
 
 double batteryVoltage;
+double stackVoltage;
 
 bool checkBatteryLevel() {
     Serial.begin(9600);
@@ -14,7 +15,13 @@ bool checkBatteryLevel() {
     Serial.println("---");
     batteryVoltage = batteryValue / 313.0;
 
-    if(batteryValue > 1800)
+    double stackVoltage1pom = batteryValue * (3.3 / 4095.0f);
+    stackVoltage = stackVoltage1pom * 4;
+    Serial.print("Stack voltage: ");
+    Serial.println(stackVoltage);
+
+
+    if(batteryValue > 1878)
         return true;
     
     return false;
