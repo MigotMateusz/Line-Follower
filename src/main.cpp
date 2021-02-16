@@ -19,7 +19,7 @@ void setup() {
 
   isBatteryLevelGood = checkBatteryLevel();
 
-  if(/*isBatteryLevelGood*/true) {
+  if(isBatteryLevelGood) {
     double batteryLevel = getBatteryVoltage();
     Serial.println("Battery Lvl Good");
     Serial.println(batteryLevel);
@@ -27,7 +27,7 @@ void setup() {
     delay(5000);
     isBatteryLevelGood = true;
     isOnTheLine = checkIfOnTheLine();
-    if(/*isOnTheLine*/ true)
+    if(isOnTheLine)
       printStartUpSuccess();
     
     else {
@@ -107,8 +107,6 @@ void loop() {
         break;
     }
   }
-  //printDebug(move, leftSensor, centerLeftSensor, centerSensor,
-  //centerRightSensor, rightSensor, frontSensor);
 
   long long currentMillis = millis();
   if(currentMillis - previousMillis > 2000) {
